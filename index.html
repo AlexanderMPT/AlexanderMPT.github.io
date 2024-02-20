@@ -14,68 +14,6 @@
 </head>
 
 <body>
-
-    <?php
-
-    $connect = mysqli_connect('localhost', 'root', 'root', 'marlodatabase');
-
-    $password = $_POST['pas'] ?? null;
-    $login = $_POST['log'] ?? null;
-
-    if (!empty($login) && !empty($password)) {
-
-        $check_user = "SELECT * FROM marlomba WHERE login_user = ?";
-        $stmt = mysqli_prepare($connect, $check_user);
-        mysqli_stmt_bind_param($stmt, "s", $login);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-        $info_user = mysqli_fetch_assoc($result);
-
-        if ($info_user) {
-            if (password_verify($password, $info_user['password_user'])) {
-                if ($info_user['status'] === 'admin') {
-                    echo 'Вы админ!';
-                } else if ($info_user['status'] === 'user') {
-                    echo 'Вы юзер!';
-                }
-                // дополнительный код для перенаправления или выполнения других действий
-            } else {
-                echo 'Неправильный пароль';
-            }
-        } else {
-            echo 'Неправильный логин или пароль';
-        }
-    }
-
-
-    $name = $_POST['name_us'] ?? null;
-    $surname = $_POST['surname_us'] ?? null;
-    $email = $_POST['email_us'] ?? null;
-    $pass = $_POST['pass_us'] ?? null;
-    $confpass = $_POST['confpass_us'] ?? null;
-    $log = $_POST['login_us'] ?? null;
-
-    if (!empty($log) && !empty($pass) && !empty($email) && !empty($name) && !empty($surname)) {
-        if ($pass == $confpass && strlen($pass) >= 6) {
-            $hashedPass = password_hash($pass, PASSWORD_DEFAULT);
-
-            $reg_user = "INSERT INTO marlomba (login_user, password_user, email_user, name_user, surname_user) VALUES (?, ?, ?, ?, ?)";
-            $stmt = mysqli_prepare($connect, $reg_user);
-            mysqli_stmt_bind_param($stmt, "sssss", $log, $hashedPass, $email, $name, $surname);
-
-            $result_reg = mysqli_stmt_execute($stmt);
-            if ($result_reg) {
-                header('Location: personal_profile.php');
-                exit;
-            } else {
-                echo 'Ошибка при регистрации';
-            }
-        } else {
-            echo 'Пароли не совпадают или слишком короткий пароль';
-        }
-    }
-    ?>
-
     
 
     <section class="section__one" id="section__one">
